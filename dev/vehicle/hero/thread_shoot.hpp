@@ -57,6 +57,8 @@
 
          setName("shoot");
 
+         Shoot::feedback[3].actual_angle = 10.0f; // Initialize the actual angle. Then plate won't move when start.
+
          Shoot::change_pid_params(GIMBAL_PID_BULLET_LOADER_A2V_PARAMS, GIMBAL_PID_BULLET_LOADER_V2I_PARAMS, GIMBAL_PID_BULLET_PLATE_A2V_PARAMS, GIMBAL_PID_BULLET_PLATE_V2I_PARAMS);
 
          while (!shouldTerminate()) {
