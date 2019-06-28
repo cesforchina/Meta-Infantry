@@ -14,11 +14,13 @@
 
 using namespace chibios_rt;
 
-CANInterface can1(&CAND1);
+CANInterface can2(&CAND2);
+
 
 float target_vx = 0.0f; // [mm/s]
 float target_vy = 0.0f; // [mm/s]
 float target_w = 0.0f;  // [degree/s], negative value for clockwise)
+bool fucking_get_stop = false;
 
 time_msecs_t test_end_time = 0; // [ms]
 
@@ -59,6 +61,7 @@ static void cmd_chassis_set_parameters(BaseSequentialStream *chp, int argc, char
         chprintf(chp, "!cpe" SHELL_NEWLINE_STR);  // echo chassis parameters error
         return;
     }
+    fucking_get_stop = false;
 
 
     Chassis::change_pid_params({Shell::atof(argv[0]),
@@ -100,6 +103,7 @@ class ChassisFeedbackThread : public BaseStaticThread<1024> {
 private:
     void main() final {
         setName("chassis");
+        int count = 0;
         while (!shouldTerminate()) {
             Shell::printf("!cv,%u,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f" SHELL_NEWLINE_STR,
                           TIME_I2MS(chibios_rt::System::getTime()),
@@ -111,6 +115,17 @@ private:
                           Chassis::target_velocity[2],
                           Chassis::feedback[3].actual_velocity,
                           Chassis::target_velocity[3]);
+            if((Chassis::feedback[0].actual_velocity>10.0f)||(Chassis::feedback[1].actual_velocity>10.0f)||(Chassis::feedback[2].actual_velocity>10.0f)||(Chassis::feedback[3].actual_velocity>10.0f))
+            {
+                count++;
+            } else {
+                count = 0;
+            }
+
+            if(count * CHASSIS_FEEDBACK_INTERVAL > 4000){
+                fucking_get_stop = true;
+            }
+
             sleep(TIME_MS2I(CHASSIS_FEEDBACK_INTERVAL));
         }
     }
@@ -124,7 +139,7 @@ protected:
 
             if (target_vx != 0.0f || target_vy != 0.0f || target_w != 0.0f) {
 
-                if (SYSTIME >= test_end_time) {
+                if (SYSTIME >= test_end_time || fucking_get_stop) {
 
                     target_vx = target_vy = target_w = 0.0f;
 

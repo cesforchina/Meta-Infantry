@@ -46,6 +46,7 @@
 
 // Interfaces
 CANInterface can1(&CAND1);
+CANInterface can2(&CAND2);
 
 //Threads
 GimbalThread gimbalThread;
@@ -70,8 +71,9 @@ int main(void){
     StateHandler::echoEvent(StateHandler::SHELL_START);
     // LED 1 on now
 
-    /** Setup CAN1 */
+    /** Setup CAN1 & CAN2 */
     can1.start(HIGHPRIO - 1);
+    can2.start(HIGHPRIO - 2);
     chThdSleepMilliseconds(50);
     startupCheckCAN();  // check no persistent CAN Error. Block for 100 ms
     StateHandler::echoEvent(StateHandler::CAN_START_SUCCESSFULLY);
@@ -93,16 +95,17 @@ int main(void){
 
 
     /** Setup Gimbal and Shoot */
+    /***
     Gimbal::init(&can1, GIMBAL_YAW_FRONT_ANGLE_RAW, GIMBAL_PITCH_FRONT_ANGLE_RAW);
     Shoot::init(SHOOT_DEGREE_PER_BULLER, SHOOT_DEGREE_PER_BULLER_PLATE);
     chThdSleepMilliseconds(10);
     startupCheckGimbalFeedback(); // check gimbal motors has continuous feedback. Block for 50 ms
     StateHandler::echoEvent(StateHandler::GIMBAL_CONNECTED);
     // LED 5 on now
-
+    ***/
 
     /** Setup Chassis */
-    Chassis::init(&can1, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
+    Chassis::init(&can2, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
     chThdSleepMilliseconds(10);
     startupCheckChassisFeedback();  // check chassis motors has continuous feedback. Block for 50 ms
     StateHandler::echoEvent(StateHandler::CHASSIS_CONNECTED);
@@ -123,9 +126,9 @@ int main(void){
         Gimbal::feedback[Gimbal::PITCH].last_angle_raw, Gimbal::feedback[Gimbal::PITCH].actual_angle);
 
     /** Start Threads **/
-    gimbalThread.start(NORMALPRIO);
+    //gimbalThread.start(NORMALPRIO);
     chassisThread.start(NORMALPRIO - 1);
-    shootThread.start(NORMALPRIO - 2);
+    //shootThread.start(NORMALPRIO - 2);
     errorDetectThread.start(LOWPRIO + 1);
 
     StateHandler::echoEvent(StateHandler::MAIN_THREAD_SETUP_COMPLETE);
