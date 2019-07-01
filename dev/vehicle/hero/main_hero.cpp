@@ -95,14 +95,15 @@ int main(void){
 
 
     /** Setup Gimbal and Shoot */
-    /***
+
     Gimbal::init(&can1, GIMBAL_YAW_FRONT_ANGLE_RAW, GIMBAL_PITCH_FRONT_ANGLE_RAW);
     Shoot::init(SHOOT_DEGREE_PER_BULLER, SHOOT_DEGREE_PER_BULLER_PLATE);
     chThdSleepMilliseconds(10);
     startupCheckGimbalFeedback(); // check gimbal motors has continuous feedback. Block for 50 ms
     StateHandler::echoEvent(StateHandler::GIMBAL_CONNECTED);
+
     // LED 5 on now
-    ***/
+
 
     /** Setup Chassis */
     Chassis::init(&can2, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
@@ -126,9 +127,9 @@ int main(void){
         Gimbal::feedback[Gimbal::PITCH].last_angle_raw, Gimbal::feedback[Gimbal::PITCH].actual_angle);
 
     /** Start Threads **/
-    //gimbalThread.start(NORMALPRIO);
+    gimbalThread.start(NORMALPRIO);
     chassisThread.start(NORMALPRIO - 1);
-    //shootThread.start(NORMALPRIO - 2);
+    shootThread.start(NORMALPRIO - 2);
     errorDetectThread.start(LOWPRIO + 1);
 
     StateHandler::echoEvent(StateHandler::MAIN_THREAD_SETUP_COMPLETE);
