@@ -174,8 +174,8 @@ int main(void) {
     Shell::start(HIGHPRIO);
     Shell::addCommands(chassisCommands);
 
-    can1.start(HIGHPRIO - 1);
-    Chassis::init(&can1, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
+    can2.start(HIGHPRIO - 1);
+    Chassis::init(&can2, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
 
     chassisFeedbackThread.start(NORMALPRIO - 1);
     chassisThread.start(NORMALPRIO);
