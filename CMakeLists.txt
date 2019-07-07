@@ -213,7 +213,7 @@ add_executable(ut_chassis
         dev/module/pid_controller.hpp
         dev/control/chassis.cpp
         dev/debug/unit_tests/chassis_unit_test.cpp)
-target_include_directories(ut_chassis PRIVATE dev/vehicle/infantry)
+target_include_directories(ut_chassis PRIVATE dev/vehicle/hero)
 
 # Elevator Interface: include CANInterface, ElevatorInterface, and the unit test modules.
 add_executable(ut_elevator_interface

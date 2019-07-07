@@ -9,11 +9,10 @@
 #include "debug/shell/shell.h"
 #include "chassis.h"
 
-#include "vehicle_infantry_three.h"
-#warning "ut_chassis is only designed for INFANTRY #3."
+#include "vehicle_hero.h"
 
 using namespace chibios_rt;
-
+CANInterface can1(&CAND1);
 CANInterface can2(&CAND2);
 
 
@@ -174,7 +173,8 @@ int main(void) {
     Shell::start(HIGHPRIO);
     Shell::addCommands(chassisCommands);
 
-    can2.start(HIGHPRIO - 1);
+    can1.start(HIGHPRIO - 1);
+    can2.start(HIGHPRIO - 2);
     Chassis::init(&can2, CHASSIS_WHEEL_BASE, CHASSIS_WHEEL_TREAD, CHASSIS_WHEEL_CIRCUMFERENCE);
 
     chassisFeedbackThread.start(NORMALPRIO - 1);
