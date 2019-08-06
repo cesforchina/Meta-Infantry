@@ -91,7 +91,7 @@ static void cmd_shoot_enable_fw(BaseSequentialStream *chp, int argc, char *argv[
         return;
     }
     if (*argv[0] == '1') {
-        Shoot::set_friction_wheels(0.1);
+        Shoot::set_friction_wheels(0.15);
     } else {
         Shoot::set_friction_wheels(0);
     }
@@ -225,7 +225,7 @@ void cmd_shoot_echo_parameters(BaseSequentialStream *chp, int argc, char *argv[]
     }
 
     chprintf(chp, "bullet v_to_i:       ");
-    _cmd_shoot_echo_parameters(chp, Shoot::v2i_pid[BULLET].get_parameters());
+    _cmd_shoot_echo_parameters(chp, Shoot::v2i_pid[0].get_parameters());
 }
 
 // Command lists for shoot controller test and adjustments
@@ -249,7 +249,7 @@ protected:
         setName("shoot");
 
         // TODO: load default parameters here
-        Shoot::change_pid_params({20.0f, 0.0f, 0.0f, 1000.0f, 3000.0f});
+        Shoot::change_pid_params({25.0f, 0.7f, 0.0f, 3000.0f, 4000.0f});
 
         while (!shouldTerminate()) {
 
@@ -284,7 +284,7 @@ protected:
 
             } else if (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_MIDDLE) {
                 // TODO: revise shoot speed and friction wheel speed by Remote here
-                Shoot::calc(Remote::rc.ch3 * 10);
+                Shoot::calc(Remote::rc.ch3 * 15);
                 Shoot::set_friction_wheels(0.2);
             } else {
                 Shoot::target_current[BULLET] = 0;
