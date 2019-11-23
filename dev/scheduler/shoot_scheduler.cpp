@@ -73,13 +73,13 @@ void ShootSKD::set_plate_target_velocity(float degree_per_second) {
     a2v_pid[1].clear_i_out();
 }
 
-void ShootSKD::set_friction_wheels(float duty_cycle) {
-    GimbalIF::fw_duty_cycle = duty_cycle;
-}
-
-float ShootSKD::get_friction_wheels_duty_cycle() {
-    return GimbalIF::fw_duty_cycle;
-}
+//void ShootSKD::set_friction_wheels(float duty_cycle) {
+//    GimbalIF::fw_duty_cycle = duty_cycle;
+//}
+//
+//float ShootSKD::get_friction_wheels_duty_cycle() {
+//    return GimbalIF::fw_duty_cycle;
+//}
 
 int ShootSKD::get_loader_target_current() {
     return target_current[0];

@@ -68,15 +68,15 @@ void HeroShootLG::shoot() {
     }
 }
 
-void HeroShootLG::set_friction_wheels(float duty_cycle) {
-    ShootSKD::set_friction_wheels(duty_cycle);
-    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (duty_cycle != 0));
-    // Sending client data will be complete by higher level thread
-}
+//void HeroShootLG::set_friction_wheels(float duty_cycle) {
+//    ShootSKD::set_friction_wheels(duty_cycle);
+//    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (duty_cycle != 0));
+//    // Sending client data will be complete by higher level thread
+//}
 
-float HeroShootLG::get_friction_wheels_duty_cycle() {
-    return ShootSKD::get_friction_wheels_duty_cycle();
-}
+//float HeroShootLG::get_friction_wheels_duty_cycle() {
+//    return ShootSKD::get_friction_wheels_duty_cycle();
+//}
 
 void HeroShootLG::force_stop() {
     ShootSKD::set_mode(ShootSKD::FORCED_RELAX_MODE);

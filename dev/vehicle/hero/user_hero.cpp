@@ -32,11 +32,11 @@ float UserH::shoot_launch_speed = 5.0f;
 uint16_t UserH::shoot_heat_log[2] = {0,0};
 uint16_t UserH::bullet_heat = 0;
 
-float UserH::shoot_badass_duty_cycle = 0.1f;
-float UserH::shoot_remote_duty_cycle = 0.11;
-float UserH::shoot_common_duty_cycle = 0.13f;             //TODO:
-
-Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
+//float UserH::shoot_badass_duty_cycle = 0.1f;
+//float UserH::shoot_remote_duty_cycle = 0.11;
+//float UserH::shoot_common_duty_cycle = 0.13f;             //TODO:
+//
+//Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
 Remote::key_t UserH::shoot_weapon_switch = Remote::KEY_Q;
 
 
@@ -157,18 +157,18 @@ void UserH::UserThread::main() {
                 /// Remote - Shoot with Scrolling Wheel
 
                 if (Remote::rc.wheel > 0.5) {  // down
-                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
-                    }
+//                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
+//                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
+//                    }
                     HeroShootLG::shoot();
                 } else if (Remote::rc.wheel < -0.5) {  // up
-                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
-                    }
+//                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
+//                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
+//                    }
                     HeroShootLG::shoot();
                 }
 
-                HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
+//                HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 
@@ -291,7 +291,7 @@ void UserH::UserActionThread::main() {
 
             /// Shoot
             if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
+//                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
             }
             if(bullet_heat + shoot_heat_log[1] < Referee::game_robot_state.shooter_heat1_cooling_limit) {
                 HeroShootLG::shoot();
@@ -317,21 +317,21 @@ void UserH::UserActionThread::main() {
             }
 
             /// Shoot
-            if (key_flag & (1U << shoot_fw_switch)) {
-                if (HeroShootLG::get_friction_wheels_duty_cycle() > 0) {
-                    HeroShootLG::set_friction_wheels(0);
-                } else {
-                    HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
-                }
-            }
-            if (key_flag & (1U << shoot_weapon_switch)) {
-                if(HeroShootLG::get_friction_wheels_duty_cycle() == shoot_common_duty_cycle){
-                    HeroShootLG::set_friction_wheels(shoot_badass_duty_cycle);
-                } else if (HeroShootLG::get_friction_wheels_duty_cycle() == shoot_badass_duty_cycle){
-                    HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
-                }
-            }
-        }
+//            if (key_flag & (1U << shoot_fw_switch)) {
+//            if (HeroShootLG::get_friction_wheels_duty_cycle() > 0) {
+//                HeroShootLG::set_friction_wheels(0);
+//            } else {
+//                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
+//            }
+//        }
+//        if (key_flag & (1U << shoot_weapon_switch)) {
+//            if(HeroShootLG::get_friction_wheels_duty_cycle() == shoot_common_duty_cycle){
+//                HeroShootLG::set_friction_wheels(shoot_badass_duty_cycle);
+//            } else if (HeroShootLG::get_friction_wheels_duty_cycle() == shoot_badass_duty_cycle){
+//                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
+//            }
+//        }
+    }
 
         // If more event type is added, remember to modify chEvtWaitAny() above
 

@@ -47,7 +47,7 @@ public:
 /**
  * @name GimbalIF
  * @note "IF" stands for "interface"
- * @brief Interface to interact with Yaw, Pitch, Bullet Loader (using CAN) and friction wheels (by PWM). Maintain the
+ * @brief Interface to interact with Yaw, Pitch, Bullet Loader (using CAN) and friction wheels (also using CAN). Maintain the
  *        feedback info and provide method to send control signal
  * @pre Hardware is connected properly (see ONES doc)
  * @pre PWM pins are set properly in board.h (I5 - alt 3, I6 - alt 3)
@@ -186,10 +186,10 @@ public:
      */
     static int target_current[MOTOR_COUNT];
 
-    /**
-     * Friction wheels duty cycle
-     */
-    static float fw_duty_cycle;
+//    /**
+//     * Friction wheels duty cycle
+//     */
+//    static float fw_duty_cycle;
 
     /**
      * Send target_current of each motor
@@ -209,10 +209,10 @@ private:
     static constexpr int VELOCITY_SAMPLE_INTERVAL = 50;  // count of feedback for one sample of angular velocity
 #endif
 
-    enum friction_wheel_channel_t {
-        FW_LEFT = 0,  // The left  friction wheel, PI5, channel 0
-        FW_RIGHT = 1  // The right friction wheel, PI6, channel 1
-    };
+//    enum friction_wheel_channel_t {
+//        FW_LEFT = 0,  // The left  friction wheel, PI5, channel 0
+//        FW_RIGHT = 1  // The right friction wheel, PI6, channel 1
+//    };
 
 };
 

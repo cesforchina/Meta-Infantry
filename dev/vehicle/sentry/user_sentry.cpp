@@ -26,9 +26,9 @@ bool UserS::shoot_power_on = true;
 float UserS::shoot_launch_left_count = 5;
 float UserS::shoot_launch_right_count = 999;
 
-float UserS::shoot_launch_speed = 5.0f;
-
-float UserS::shoot_common_duty_cycle = 0.3;
+//float UserS::shoot_launch_speed = 5.0f;
+//
+//float UserS::shoot_common_duty_cycle = 0.3;
 
 bool UserS::fire = false;
 

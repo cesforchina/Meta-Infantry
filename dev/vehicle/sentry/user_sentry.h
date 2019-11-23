@@ -64,7 +64,7 @@ private:
 
     static float shoot_launch_speed;
 
-    static float shoot_common_duty_cycle;
+//    static float shoot_common_duty_cycle;
 
     static void set_mode(sentry_mode_t mode);
 

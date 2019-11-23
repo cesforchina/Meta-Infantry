@@ -76,7 +76,7 @@ void shoot_get_config(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "!ss,%f,%f,%f,%f,%c" SHELL_NEWLINE_STR,
              UserS::shoot_launch_left_count, UserS::shoot_launch_right_count,
              UserS::shoot_launch_speed,
-             UserS::shoot_common_duty_cycle,
+ //            UserS::shoot_common_duty_cycle,
              ' ');
 }
 
@@ -90,7 +90,7 @@ void shoot_set_config(BaseSequentialStream *chp, int argc, char *argv[]) {
     UserS::shoot_launch_left_count = Shell::atof(argv[0]);
     UserS::shoot_launch_right_count = Shell::atof(argv[1]);
     UserS::shoot_launch_speed = Shell::atof(argv[2]);
-    UserS::shoot_common_duty_cycle = Shell::atof(argv[3]);
+//    UserS::shoot_common_duty_cycle = Shell::atof(argv[3]);
 
     chprintf(chp, "!so" SHELL_NEWLINE_STR);
 }

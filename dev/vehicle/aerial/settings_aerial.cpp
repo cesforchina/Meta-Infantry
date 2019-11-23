@@ -51,9 +51,10 @@ void shoot_get_config(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
     chprintf(chp, "!ss,%f,%f,%f,%f,%c" SHELL_NEWLINE_STR,
              UserA::shoot_launch_left_count, UserA::shoot_launch_right_count,
-             UserA::shoot_launch_speed,
-             UserA::shoot_common_duty_cycle,
-             Remote::key2char(UserA::shoot_fw_switch));
+             UserA::shoot_launch_speed
+//             UserA::shoot_common_duty_cycle,
+//             Remote::key2char(UserA::shoot_fw_switch)
+             );
 }
 
 void shoot_set_config(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -66,8 +67,8 @@ void shoot_set_config(BaseSequentialStream *chp, int argc, char *argv[]) {
     UserA::shoot_launch_left_count = Shell::atof(argv[0]);
     UserA::shoot_launch_right_count = Shell::atof(argv[1]);
     UserA::shoot_launch_speed = Shell::atof(argv[2]);
-    UserA::shoot_common_duty_cycle = Shell::atof(argv[3]);
-    UserA::shoot_fw_switch = Remote::char2key(argv[4][0]);
+//    UserA::shoot_common_duty_cycle = Shell::atof(argv[3]);
+//    UserA::shoot_fw_switch = Remote::char2key(argv[4][0]);
 
     chprintf(chp, "!so" SHELL_NEWLINE_STR);
 }

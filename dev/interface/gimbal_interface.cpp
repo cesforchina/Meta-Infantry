@@ -18,22 +18,22 @@
 
 GimbalIF::motor_feedback_t GimbalIF::feedback[MOTOR_COUNT];
 int GimbalIF::target_current[MOTOR_COUNT] = {0, 0, 0};
-float GimbalIF::fw_duty_cycle = 0.0f;
+//float GimbalIF::fw_duty_cycle = 0.0f;
 CANInterface *GimbalIF::can_ = nullptr;
 
-const PWMConfig FRICTION_WHEELS_PWM_CFG = {
-        50000,   // frequency
-        1000,    // period
-        nullptr, // callback
-        {
-                {PWM_OUTPUT_ACTIVE_HIGH, nullptr}, // CH0
-                {PWM_OUTPUT_ACTIVE_HIGH, nullptr}, // CH1
-                {PWM_OUTPUT_DISABLED, nullptr},    // CH2
-                {PWM_OUTPUT_DISABLED, nullptr}     // CH3
-        },
-        0,
-        0
-};
+//const PWMConfig FRICTION_WHEELS_PWM_CFG = {
+//        50000,   // frequency
+//        1000,    // period
+//        nullptr, // callback
+//        {
+//                {PWM_OUTPUT_ACTIVE_HIGH, nullptr}, // CH0
+//                {PWM_OUTPUT_ACTIVE_HIGH, nullptr}, // CH1
+//                {PWM_OUTPUT_DISABLED, nullptr},    // CH2
+//                {PWM_OUTPUT_DISABLED, nullptr}     // CH3
+//        },
+//        0,
+//        0
+//};
 
 void GimbalIF::init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, uint16_t pitch_front_angle_raw,
         motor_type_t yaw_type, motor_type_t pitch_type, motor_type_t bullet_type, motor_type_t plate_type) {
@@ -59,13 +59,14 @@ void GimbalIF::init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, u
 
     // Enable PWM and perform initialization on friction wheels
 
-    pwmStart(&PWMD8, &FRICTION_WHEELS_PWM_CFG);
+//    pwmStart(&PWMD8, &FRICTION_WHEELS_PWM_CFG);
 
 //    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
 //    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
 //    chThdSleep(TIME_MS2I(500));
-    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
-    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
+
+//    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
+//    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
 
 }
 
@@ -148,8 +149,8 @@ if (feedback[YAW].type != RM6623) {
     can_->send_msg(&txmsg);
 
     // Set the PWM of friction wheels
-    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
-    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
+//    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
+//    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
 
 //    LOG("FW %f", fw_duty_cycle);
 
