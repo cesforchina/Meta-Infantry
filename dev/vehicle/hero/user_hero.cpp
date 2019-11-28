@@ -34,9 +34,9 @@ uint16_t UserH::bullet_heat = 0;
 
 //float UserH::shoot_badass_duty_cycle = 0.1f;
 //float UserH::shoot_remote_duty_cycle = 0.11;
-//float UserH::shoot_common_duty_cycle = 0.13f;             //TODO:
+float UserH::shoot_common_speed = 0.0f;             //TODO: find suitable shooting speed
 //
-//Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
+Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
 Remote::key_t UserH::shoot_weapon_switch = Remote::KEY_Q;
 
 
@@ -157,18 +157,18 @@ void UserH::UserThread::main() {
                 /// Remote - Shoot with Scrolling Wheel
 
                 if (Remote::rc.wheel > 0.5) {  // down
-//                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-//                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
-//                    }
+                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+                        HeroShootLG::set_friction_wheels(shoot_common_speed);
+                    }
                     HeroShootLG::shoot();
                 } else if (Remote::rc.wheel < -0.5) {  // up
-//                    if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-//                        HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
-//                    }
+                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+                        HeroShootLG::set_friction_wheels(shoot_common_speed);
+                    }
                     HeroShootLG::shoot();
                 }
 
-//                HeroShootLG::set_friction_wheels(shoot_remote_duty_cycle);
+                HeroShootLG::set_friction_wheels(shoot_common_speed);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 
@@ -290,15 +290,15 @@ void UserH::UserActionThread::main() {
 //            eventflags_t mouse_flag = chEvtGetAndClearFlags(&mouse_press_listener);
 
             /// Shoot
-            if (HeroShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-//                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
+            if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+                HeroShootLG::set_friction_wheels(shoot_common_speed);
             }
             if(bullet_heat + shoot_heat_log[1] < Referee::game_robot_state.shooter_heat1_cooling_limit) {
                 HeroShootLG::shoot();
             }
         } else {  // releasing one while pressing another won't result in stopping
             if (events & MOUSE_RELEASE_EVENTMASK) {
-                // HeroShootLG::force_stop();
+                 HeroShootLG::force_stop();
             }
         }
 
@@ -317,20 +317,20 @@ void UserH::UserActionThread::main() {
             }
 
             /// Shoot
-//            if (key_flag & (1U << shoot_fw_switch)) {
-//            if (HeroShootLG::get_friction_wheels_duty_cycle() > 0) {
-//                HeroShootLG::set_friction_wheels(0);
-//            } else {
-//                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
-//            }
-//        }
+            if (key_flag & (1U << shoot_fw_switch)) {
+            if (HeroShootLG::get_friction_wheels_target_velocity() > 0) {
+                HeroShootLG::set_friction_wheels(0);
+            } else {
+                HeroShootLG::set_friction_wheels(shoot_common_speed);
+            }
+        }
 //        if (key_flag & (1U << shoot_weapon_switch)) {
 //            if(HeroShootLG::get_friction_wheels_duty_cycle() == shoot_common_duty_cycle){
 //                HeroShootLG::set_friction_wheels(shoot_badass_duty_cycle);
 //            } else if (HeroShootLG::get_friction_wheels_duty_cycle() == shoot_badass_duty_cycle){
 //                HeroShootLG::set_friction_wheels(shoot_common_duty_cycle);
 //            }
-//        }
+//        } //TODO: Rewrite this fw speed changing part
     }
 
         // If more event type is added, remember to modify chEvtWaitAny() above
@@ -356,9 +356,9 @@ void UserH::ClientDataSendingThread::main() {
                                                     (float) Referee::game_robot_state.shooter_heat1_cooling_limit));
         // Launch system light. Red: Friction wheel disabled. Flash: Friction wheel enabled, loading
         // Green: Friction wheel enabled, loaded.
-        if(HeroShootLG::get_friction_wheels_duty_cycle() == 0) {
+        if(HeroShootLG::get_friction_wheels_target_velocity() == 0) {
             Referee::set_client_light(1, false);
-        } else if(HeroShootLG::get_friction_wheels_duty_cycle() != 0) {
+        } else if(HeroShootLG::get_friction_wheels_target_velocity() != 0) {
             if (HeroShootLG::get_loading_status()) {
                 Referee::set_client_light(1, true);
             } else if(!HeroShootLG::get_loading_status()) {

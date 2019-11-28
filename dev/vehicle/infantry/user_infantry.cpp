@@ -29,9 +29,9 @@ float UserI::shoot_launch_right_count = 999;
 
 float UserI::shoot_launch_speed = 5.0f;
 
-//float UserI::shoot_common_duty_cycle = 0.75;
-//
-//Remote::key_t UserI::shoot_fw_switch = Remote::KEY_Z;
+float UserI::shoot_common_speed = 0.0f;    // TODO: find suitable shooting speed
+
+Remote::key_t UserI::shoot_fw_switch = Remote::KEY_Z;
 
 
 /// Variables
@@ -158,7 +158,7 @@ void UserI::UserThread::main() {
                     }
                 }
 
-//                ShootLG::set_friction_wheels(shoot_common_duty_cycle);
+                ShootLG::set_friction_wheels(shoot_common_speed);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 
@@ -169,13 +169,13 @@ void UserI::UserThread::main() {
             } else {
                 /// Safe Mode
                 ShootLG::stop();
-//                ShootLG::set_friction_wheels(0);
+                ShootLG::set_friction_wheels(0);
             }
 
         } else {  // InspectorI::remote_failure() || InspectorI::chassis_failure() || InspectorI::gimbal_failure()
             /// Safe Mode
             ShootLG::stop();
-//            ShootLG::set_friction_wheels(0);
+            ShootLG::set_friction_wheels(0);
         }
 
         /*** ---------------------------------- Chassis --------------------------------- ***/
@@ -286,9 +286,9 @@ void UserI::UserActionThread::main() {
             eventflags_t mouse_flag = chEvtGetAndClearFlags(&mouse_press_listener);
 
             /// Shoot
-//            if (ShootLG::get_friction_wheels_duty_cycle() == 0) {  // force start friction wheels
-//                ShootLG::set_friction_wheels(shoot_common_duty_cycle);
-//            }
+            if (ShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+                ShootLG::set_friction_wheels(shoot_common_speed);
+            }
             if (mouse_flag & (1U << Remote::MOUSE_LEFT)) {
                 ShootLG::shoot(shoot_launch_left_count, shoot_launch_speed);
             } else if (mouse_flag & (1U << Remote::MOUSE_RIGHT)) {
@@ -323,15 +323,15 @@ void UserI::UserActionThread::main() {
             }
 
             /// Shoot
-//            if (key_flag & (1U << shoot_fw_switch)) {
-//                if (ShootLG::get_friction_wheels_duty_cycle() > 0) {
-//                    ShootLG::set_friction_wheels(0);
-//                } else {
-//                    ShootLG::set_friction_wheels(shoot_common_duty_cycle);
-//                }
-//            }
-//
-//            // TODO: re-arrange variables
+            if (key_flag & (1U << shoot_fw_switch)) {
+                if (ShootLG::get_friction_wheels_target_velocity() > 0) {
+                    ShootLG::set_friction_wheels(0);
+                } else {
+                    ShootLG::set_friction_wheels(shoot_common_speed);
+                }
+            }
+
+            // TODO: rewrite this fw speed changing part
 //            if (key_flag & (1U << Remote::KEY_R)) {
 //                ShootLG::set_friction_wheels(0.95);
 //            }

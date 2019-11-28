@@ -36,7 +36,8 @@ CANInterface *GimbalIF::can_ = nullptr;
 //};
 
 void GimbalIF::init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, uint16_t pitch_front_angle_raw,
-        motor_type_t yaw_type, motor_type_t pitch_type, motor_type_t bullet_type, motor_type_t plate_type) {
+        motor_type_t yaw_type, motor_type_t pitch_type, motor_type_t bullet_type, motor_type_t fw_type,
+        motor_type_t plate_type) {
 
     feedback[YAW].id = YAW;
     feedback[YAW].type = yaw_type;
@@ -54,8 +55,16 @@ void GimbalIF::init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, u
     feedback[PLATE].type = plate_type;
     feedback[PLATE].reset_front_angle();
 
+    feedback[FW_LEFT].id = FW_LEFT;
+    feedback[FW_LEFT].type = fw_type;
+    feedback[FW_LEFT].reset_front_angle();
+
+    feedback[FW_RIGHT].id = FW_RIGHT;
+    feedback[FW_LEFT].type = fw_type;
+    feedback[FW_LEFT].reset_front_angle();
+
     can_ = can_interface;
-    can_->register_callback(0x205, 0x208, process_motor_feedback);
+    can_->register_callback(0x201, 0x206, process_motor_feedback); //TODO: Reset motor IDs
 
     // Enable PWM and perform initialization on friction wheels
 
@@ -76,7 +85,7 @@ void GimbalIF::send_gimbal_currents() {
 
     // Fill the header
     txmsg.IDE = CAN_IDE_STD;
-    txmsg.SID = 0x1FF;
+    txmsg.SID = 0x200;
     txmsg.RTR = CAN_RTR_DATA;
     txmsg.DLC = 0x08;
 
@@ -156,6 +165,53 @@ if (feedback[YAW].type != RM6623) {
 
 }
 
+void GimbalIF::send_fw_currents() {
+
+    CANTxFrame txmsg;
+
+    // Fill the header
+    txmsg.IDE = CAN_IDE_STD;
+    txmsg.SID = 0x1FF;
+    txmsg.RTR = CAN_RTR_DATA;
+    txmsg.DLC = 0x08;
+
+    // Fill the current of fw_left
+#if GIMBAL_INTERFACE_ENABLE_CLIP
+    ABS_CROP(target_current[YAW], GIMBAL_INTERFACE_MAX_CURRENT);
+#endif
+
+    if (feedback[FW_LEFT].type != RM6623) {
+        txmsg.data8[0] = (uint8_t) (target_current[YAW] >> 8); // upper byte
+        txmsg.data8[1] = (uint8_t) target_current[YAW];        // lower byte
+    } else {
+        /**
+         * @note Viewing from the top of 6623, angle use CCW as positive direction, while current use CW as positive
+         *       direction. In order to unified coordinate system, minus sign is applied here.
+         */
+        txmsg.data8[0] = (uint8_t) (-target_current[YAW] >> 8); // upper byte
+        txmsg.data8[1] = (uint8_t) -target_current[YAW];        // lower byte
+    }
+
+    // Fill the current of fw_right
+#if GIMBAL_INTERFACE_ENABLE_CLIP
+    ABS_CROP(target_current[PITCH], GIMBAL_INTERFACE_MAX_CURRENT);
+#endif
+    if (feedback[FW_RIGHT].type != RM6623) {
+        txmsg.data8[2] = (uint8_t) (target_current[PITCH] >> 8); // upper byte
+        txmsg.data8[3] = (uint8_t) target_current[PITCH];        // lower byte
+    } else {
+        /**
+         * @note Viewing from the top of 6623, angle use CCW as positive direction, while current use CW as positive
+         *       direction. In order to unified coordinate system, minus sign is applied here.
+         */
+        txmsg.data8[2] = (uint8_t) (-target_current[PITCH] >> 8); // upper byte
+        txmsg.data8[3] = (uint8_t) -target_current[PITCH];        // lower byte
+    }
+
+    can_->send_msg(&txmsg);
+
+}
+
 void GimbalIF::process_motor_feedback(CANRxFrame const *rxmsg) {
 
     /**
@@ -172,7 +228,7 @@ void GimbalIF::process_motor_feedback(CANRxFrame const *rxmsg) {
     // Check whether this new raw angle is valid
     if (new_actual_angle_raw > 8191) return;
 
-    motor_feedback_t* fb = &feedback[(motor_id_t) (rxmsg->SID - 0x205)];
+    motor_feedback_t* fb = &feedback[(motor_id_t) (rxmsg->SID - 0x201)];
 
     /// Calculate the angle movement in raw data
     // KEY IDEA: add the change of angle to actual angle

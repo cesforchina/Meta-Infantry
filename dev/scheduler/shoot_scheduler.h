@@ -62,7 +62,7 @@ public:
      * @param thread_prio                Priority of PID calculating thread
      */
     static void start(install_direction_t loader_install_, install_direction_t plate_install_, tprio_t thread_prio);
-
+        // TODO: Do we need to install negative direction for friction wheels?
     /**
      * Set PID parameters of loader and plate
      * @param loader_a2v_params
@@ -71,7 +71,8 @@ public:
      * @param plate_v2i_params
      */
     static void load_pid_params(pid_params_t loader_a2v_params, pid_params_t loader_v2i_params,
-                                pid_params_t plate_a2v_params, pid_params_t plate_v2i_params);
+                                pid_params_t plate_a2v_params, pid_params_t plate_v2i_params,
+                                pid_params_t fw_left_v2i_params, pid_params_t fw_right_v2i_params);
 
     /**
      * Set mode of this SKD
@@ -115,6 +116,12 @@ public:
      */
 //    static void set_friction_wheels(float duty_cycle);
 
+    /**
+     * Set friction wheels target velocity in LIMITED_SHOOTING_MODE or REVERSE_TURNING_MODE
+     * @param degree_per_second  Friction wheels duty cycle, define "out" as positive  //TODO
+     */
+    static void set_fw_target_velocity (float round_per_second);
+
 
     /** -------------------------------------- Functions to access GimbalIF -------------------------------------- */
 
@@ -123,6 +130,12 @@ public:
      * @return Friction wheels duty cycle, from 0 to 1.0
      */
 //    static float get_friction_wheels_duty_cycle();
+
+    /**
+     * Get friction wheels target velocity
+     * @return Round per second
+     */
+    static float get_fw_target_velocity();
 
     /**
      * Get bullet loader target current calculated in this SKD
@@ -177,10 +190,10 @@ private:
     static mode_t mode;
 
     static float target_angle[2];
-    static float target_velocity[2];
-    static int target_current[2];
+    static float target_velocity[4];
+    static int target_current[4];
 
-    static PIDController v2i_pid[2];
+    static PIDController v2i_pid[4];
     static PIDController a2v_pid[2];
 
     static constexpr unsigned int SKD_THREAD_INTERVAL = 2; // PID calculation interval [ms]

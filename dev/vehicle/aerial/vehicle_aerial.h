@@ -9,6 +9,7 @@
 #define GIMBAL_YAW_MOTOR_TYPE     (GimbalIF::GM6020)
 #define GIMBAL_PITCH_MOTOR_TYPE   (GimbalIF::GM3510)
 #define SHOOT_BULLET_MOTOR_TYPE   (GimbalIF::M2006)
+#define FW_MOTOR_TYPE             (GimbalIF::M3508)
 
 #define GIMBAL_YAW_INSTALL_DIRECTION      (GimbalSKD::NEGATIVE)
 #define GIMBAL_YAW_DECELERATION_RATIO     1.0f

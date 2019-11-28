@@ -52,15 +52,14 @@ private:
     static uint16_t shoot_heat_log[2];
     static uint16_t bullet_heat;
 
-//    static float shoot_badass_duty_cycle;
-//    static float shoot_remote_duty_cycle;
-//    static float shoot_common_duty_cycle;
+//    static float shoot_critical_speed;
+    static float shoot_common_speed;
 //    static float badass_duty_cycle;
 
     static float common_plate_target_range;
     static float badass_plate_target_range;
 
-//    static Remote::key_t shoot_fw_switch;
+    static Remote::key_t shoot_fw_switch;
     static Remote::key_t shoot_weapon_switch;
 
     /// Helpers

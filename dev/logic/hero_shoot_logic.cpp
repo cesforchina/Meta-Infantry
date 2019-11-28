@@ -68,15 +68,15 @@ void HeroShootLG::shoot() {
     }
 }
 
-//void HeroShootLG::set_friction_wheels(float duty_cycle) {
-//    ShootSKD::set_friction_wheels(duty_cycle);
-//    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (duty_cycle != 0));
-//    // Sending client data will be complete by higher level thread
-//}
+void HeroShootLG::set_friction_wheels(float round_per_second) {
+    if (ShootSKD::get_fw_target_velocity() != round_per_second) ShootSKD::set_fw_target_velocity(round_per_second);
+    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (round_per_second != 0));
+    // Sending client data will be complete by higher level thread
+}
 
-//float HeroShootLG::get_friction_wheels_duty_cycle() {
-//    return ShootSKD::get_friction_wheels_duty_cycle();
-//}
+float HeroShootLG::get_friction_wheels_target_velocity() {
+    return ShootSKD::get_fw_target_velocity();
+}
 
 void HeroShootLG::force_stop() {
     ShootSKD::set_mode(ShootSKD::FORCED_RELAX_MODE);
@@ -94,7 +94,8 @@ void HeroShootLG::LoaderCalibrateThread::main() {
     setName("LoaderCalibrate");
     bool calibrate_success = false;
     bool loader_exit_status_sequence[2] = {false, false};
-    ShootSKD::load_pid_params(CALIBRATE_PID_BULLET_LOADER_A2V_PARAMS, SHOOT_PID_BULLET_LOADER_V2I_PARAMS,SHOOT_PID_BULLET_PLATE_A2V_PARAMS,SHOOT_PID_BULLET_PLATE_V2I_PARAMS);
+    ShootSKD::load_pid_params(CALIBRATE_PID_BULLET_LOADER_A2V_PARAMS, SHOOT_PID_BULLET_LOADER_V2I_PARAMS, SHOOT_PID_BULLET_PLATE_A2V_PARAMS,
+            SHOOT_PID_BULLET_PLATE_V2I_PARAMS, SHOOT_PID_FW_LEFT_V2I_PARAMS, SHOOT_PID_FW_RIGHT_V2I_PARAMS);
     while(!shouldTerminate()) {
         loader_exit_status_sequence[0] = loader_exit_status_sequence[1];
         loader_exit_status_sequence[1] = get_loader_exit_status();
@@ -106,7 +107,8 @@ void HeroShootLG::LoaderCalibrateThread::main() {
         if((loader_exit_status_sequence[0] && !loader_exit_status_sequence[1]) && loader_target_angle == 666.6f){
             loader_target_angle = ShootSKD::get_loader_accumulated_angle();
             ShootSKD::set_loader_target_angle(loader_target_angle);
-            ShootSKD::load_pid_params(SHOOT_PID_BULLET_LOADER_A2V_PARAMS,SHOOT_PID_BULLET_LOADER_V2I_PARAMS,SHOOT_PID_BULLET_PLATE_A2V_PARAMS,SHOOT_PID_BULLET_PLATE_V2I_PARAMS);
+            ShootSKD::load_pid_params(SHOOT_PID_BULLET_LOADER_A2V_PARAMS,SHOOT_PID_BULLET_LOADER_V2I_PARAMS,SHOOT_PID_BULLET_PLATE_A2V_PARAMS,
+                    SHOOT_PID_BULLET_PLATE_V2I_PARAMS, SHOOT_PID_FW_LEFT_V2I_PARAMS, SHOOT_PID_FW_RIGHT_V2I_PARAMS);
             loader_target_angle += 40.0f;
             ShootSKD::set_loader_target_angle(loader_target_angle);
         }

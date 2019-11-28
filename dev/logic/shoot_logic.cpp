@@ -44,19 +44,21 @@ int ShootLG::get_bullet_count() {
     return bullet_count;
 }
 
-//void ShootLG::set_friction_wheels(float duty_cycle) {
-//    ShootSKD::set_friction_wheels(duty_cycle);
-//    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (duty_cycle != 0));
-//#if defined(INFANTRY)
-//    // TODO: re-arrange here for common vehicle
-//    Referee::set_client_number(USER_CLIENT_FW_SPEED_NUM, duty_cycle);
-//#endif
-    // Sending client data will be complete by higher level thread
-//}
+// if using PWM, change this function back to last version
+void ShootLG::set_friction_wheels(float round_per_second) {
+    if (ShootSKD::get_fw_target_velocity() != round_per_second) ShootSKD::set_fw_target_velocity(round_per_second);
+    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (round_per_second != 0));
+#if defined(INFANTRY)
+    // TODO: re-arrange here for common vehicle
+    Referee::set_client_number(USER_CLIENT_FW_SPEED_NUM, round_per_second);
+#endif
+     //Sending client data will be complete by higher level thread
+}
 
-//float ShootLG::get_friction_wheels_duty_cycle() {
-//    return ShootSKD::get_friction_wheels_duty_cycle();
-//}
+// if using PWM, change this function back to last version
+float ShootLG::get_friction_wheels_target_velocity() {
+    return ShootSKD::get_fw_target_velocity();
+}
 
 ShootLG::shooter_state_t ShootLG::get_shooter_state() {
     return shooter_state;

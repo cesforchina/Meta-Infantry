@@ -39,7 +39,9 @@ public:
         PITCH = 1,
         BULLET = 2,
         PLATE = 3,
-        MOTOR_COUNT = 4
+        FW_LEFT = 4,
+        FW_RIGHT = 5,
+        MOTOR_COUNT = 6
     };
 };
 
@@ -107,7 +109,7 @@ public:
      */
     static void init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, uint16_t pitch_front_angle_raw,
                      motor_type_t yaw_type, motor_type_t pitch_type, motor_type_t bullet_type,
-                     motor_type_t plate_type = NONE_MOTOR);
+                     motor_type_t fw_type, motor_type_t plate_type = NONE_MOTOR);
 
 
     struct motor_feedback_t {
@@ -196,6 +198,11 @@ public:
      * @return Whether currents are sent successfully
      */
     static void send_gimbal_currents();
+
+    /*
+     * Send target current of two fw motors
+     */
+    static void send_fw_currents();
 
 
 private:
