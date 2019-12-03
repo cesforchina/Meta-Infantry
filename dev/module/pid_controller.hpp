@@ -6,6 +6,8 @@
 #ifndef META_INFANTRY_PID_CONTROLLER_HPP
 #define META_INFANTRY_PID_CONTROLLER_HPP
 
+#include "shell.h"
+
 class PIDControllerBase {
 public:
 
@@ -51,10 +53,6 @@ public:
         return p;
     }
 
-    // temporal function used in debugging
-    float what_is_error() {
-        return error[0];
-    }
 
     /**
      * Perform one calculation
@@ -66,7 +64,6 @@ public:
 
         error[1] = error[0];
         error[0] = target - now;
-
         p_out = p.kp * error[0];
         i_out += p.ki * error[0];
         d_out = p.kd * (error[0] - error[1]);

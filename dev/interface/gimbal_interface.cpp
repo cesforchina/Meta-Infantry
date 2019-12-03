@@ -60,8 +60,8 @@ void GimbalIF::init(CANInterface *can_interface, uint16_t yaw_front_angle_raw, u
     feedback[FW_LEFT].reset_front_angle();
 
     feedback[FW_RIGHT].id = FW_RIGHT;
-    feedback[FW_LEFT].type = fw_type;
-    feedback[FW_LEFT].reset_front_angle();
+    feedback[FW_RIGHT].type = fw_type;
+    feedback[FW_RIGHT].reset_front_angle();
 
     can_ = can_interface;
     can_->register_callback(0x201, 0x206, process_motor_feedback); //TODO: Reset motor IDs

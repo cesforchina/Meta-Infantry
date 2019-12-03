@@ -61,7 +61,8 @@ public:
      * @param plate_install_             Installation direction of plate
      * @param thread_prio                Priority of PID calculating thread
      */
-    static void start(install_direction_t loader_install_, install_direction_t plate_install_, tprio_t thread_prio);
+    static void start(install_direction_t loader_install_, install_direction_t plate_install_,
+                      install_direction_t fw_left_install_, install_direction_t fw_right_install_,tprio_t thread_prio);
         // TODO: Do we need to install negative direction for friction wheels?
     /**
      * Set PID parameters of loader and plate
@@ -184,8 +185,7 @@ public:
     static void reset_plate_accumulated_angle();
 
 private:
-    static float prev_velocity;
-    static install_direction_t install_position[2];
+    static install_direction_t install_position[4];
 
     static mode_t mode;
 

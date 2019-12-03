@@ -34,7 +34,7 @@ uint16_t UserH::bullet_heat = 0;
 
 //float UserH::shoot_badass_duty_cycle = 0.1f;
 //float UserH::shoot_remote_duty_cycle = 0.11;
-float UserH::shoot_common_speed = 0.0f;             //TODO: find suitable shooting speed
+float UserH::shoot_common_speed = 360.0f;             //TODO: find suitable shooting speed
 //
 Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
 Remote::key_t UserH::shoot_weapon_switch = Remote::KEY_Q;

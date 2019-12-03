@@ -11,9 +11,8 @@
  */
 
 #include "shoot_scheduler.h"
-//#include "led.h"
 
-ShootSKD::install_direction_t ShootSKD::install_position[2];
+ShootSKD::install_direction_t ShootSKD::install_position[4];
 
 ShootSKD::mode_t ShootSKD::mode = FORCED_RELAX_MODE;
 
@@ -26,10 +25,12 @@ PIDController ShootSKD::a2v_pid[2];
 
 ShootSKD::SKDThread ShootSKD::skdThread;
 
-void ShootSKD::start(ShootSKD::install_direction_t loader_install_, ShootSKD::install_direction_t plate_install_,
-                     tprio_t thread_prio) {
+void ShootSKD::start(install_direction_t loader_install_, install_direction_t plate_install_,
+                     install_direction_t fw_left_install_, install_direction_t fw_right_install_,tprio_t thread_prio) {
     install_position[0] = loader_install_;
     install_position[1] = plate_install_;
+    install_position[2] = fw_left_install_;
+    install_position[3] = fw_right_install_;
 
     skdThread.start(thread_prio);
 }
@@ -130,7 +131,6 @@ void ShootSKD::reset_plate_accumulated_angle() {
 void ShootSKD::SKDThread::main() {
     setName("Shoot_SKD");
     while (!shouldTerminate()) {
-        Shell::printf("\n\ractual: %f target: %f target_I: %d error: %f",GimbalIF::feedback[5].actual_velocity,target_velocity[3],target_current[3], v2i_pid[3].what_is_error());
         if (mode == LIMITED_SHOOTING_MODE) {
 
             // PID calculation
@@ -142,17 +142,14 @@ void ShootSKD::SKDThread::main() {
                         target_velocity[i]);
                 GimbalIF::target_current[i + 2] = target_current[i] * install_position[i];
             }
-            for (size_t i = 2; i < 4; i++ ) {
-                target_current[i] = (int) v2i_pid[i].calc(GimbalIF::feedback[i + 2].actual_velocity, target_velocity[i]);
-            //    GimbalIF::target_current[i + 2] = (target_velocity[i] == 0) ? 0 : target_current[i];
-                GimbalIF::target_current[i + 2] = target_current[i];
-            }
-
         } else if (mode == FORCED_RELAX_MODE) {
-
             GimbalIF::target_current[GimbalIF::BULLET] = GimbalIF::target_current[GimbalIF::PLATE] = 0;
         }
 
+        for (size_t i = 2; i < 4; i++ ) {
+            target_current[i] = (int) v2i_pid[i].calc(GimbalIF::feedback[i + 2].actual_velocity * install_position[i], target_velocity[i]);
+            GimbalIF::target_current[i + 2] = (target_velocity[i] == 0) ? 0 : target_current[i] * install_position[i];
+        }
         // Send currents with GimbalSKD (has smaller SKD_THREAD_INTERVAL)
 
         sleep(TIME_MS2I(SKD_THREAD_INTERVAL));
