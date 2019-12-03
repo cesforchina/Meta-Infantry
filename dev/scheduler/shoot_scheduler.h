@@ -120,7 +120,7 @@ public:
      * Set friction wheels target velocity in LIMITED_SHOOTING_MODE or REVERSE_TURNING_MODE
      * @param degree_per_second  Friction wheels duty cycle, define "out" as positive  //TODO
      */
-    static void set_fw_target_velocity (float round_per_second);
+    static void set_fw_target_velocity (float degree_per_second);
 
 
     /** -------------------------------------- Functions to access GimbalIF -------------------------------------- */
@@ -184,7 +184,7 @@ public:
     static void reset_plate_accumulated_angle();
 
 private:
-
+    static float prev_velocity;
     static install_direction_t install_position[2];
 
     static mode_t mode;

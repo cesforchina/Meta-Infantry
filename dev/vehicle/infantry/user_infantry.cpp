@@ -29,7 +29,7 @@ float UserI::shoot_launch_right_count = 999;
 
 float UserI::shoot_launch_speed = 5.0f;
 
-float UserI::shoot_common_speed = 0.0f;    // TODO: find suitable shooting speed
+float UserI::shoot_common_speed = 60.0f;    // TODO: find suitable shooting speed
 
 Remote::key_t UserI::shoot_fw_switch = Remote::KEY_Z;
 
@@ -147,18 +147,21 @@ void UserI::UserThread::main() {
                 if (Remote::rc.wheel > 0.5) {  // down
                     if (ShootLG::get_shooter_state() == ShootLG::STOP) {
                         ShootLG::shoot(shoot_launch_left_count, shoot_launch_speed);
+                        ShootLG::set_friction_wheels(0);
                     }
                 } else if (Remote::rc.wheel < -0.5) {  // up
                     if (ShootLG::get_shooter_state() == ShootLG::STOP) {
                         ShootLG::shoot(shoot_launch_right_count, shoot_launch_speed);
+                        ShootLG::set_friction_wheels(1);
                     }
                 } else {
                     if (ShootLG::get_shooter_state() != ShootLG::STOP) {
                         ShootLG::stop();
+                        ShootLG::set_friction_wheels(0);
                     }
                 }
 
-                ShootLG::set_friction_wheels(shoot_common_speed);
+//                ShootLG::set_friction_wheels(shoot_common_speed);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 

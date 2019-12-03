@@ -181,15 +181,15 @@ void GimbalIF::send_fw_currents() {
 #endif
 
     if (feedback[FW_LEFT].type != RM6623) {
-        txmsg.data8[0] = (uint8_t) (target_current[YAW] >> 8); // upper byte
-        txmsg.data8[1] = (uint8_t) target_current[YAW];        // lower byte
+        txmsg.data8[0] = (uint8_t) (target_current[FW_LEFT] >> 8); // upper byte
+        txmsg.data8[1] = (uint8_t) target_current[FW_LEFT];        // lower byte
     } else {
         /**
          * @note Viewing from the top of 6623, angle use CCW as positive direction, while current use CW as positive
          *       direction. In order to unified coordinate system, minus sign is applied here.
          */
-        txmsg.data8[0] = (uint8_t) (-target_current[YAW] >> 8); // upper byte
-        txmsg.data8[1] = (uint8_t) -target_current[YAW];        // lower byte
+        txmsg.data8[0] = (uint8_t) (-target_current[FW_LEFT] >> 8); // upper byte
+        txmsg.data8[1] = (uint8_t) -target_current[FW_LEFT];        // lower byte
     }
 
     // Fill the current of fw_right
@@ -197,15 +197,15 @@ void GimbalIF::send_fw_currents() {
     ABS_CROP(target_current[PITCH], GIMBAL_INTERFACE_MAX_CURRENT);
 #endif
     if (feedback[FW_RIGHT].type != RM6623) {
-        txmsg.data8[2] = (uint8_t) (target_current[PITCH] >> 8); // upper byte
-        txmsg.data8[3] = (uint8_t) target_current[PITCH];        // lower byte
+        txmsg.data8[2] = (uint8_t) (target_current[FW_RIGHT] >> 8); // upper byte
+        txmsg.data8[3] = (uint8_t) target_current[FW_RIGHT];        // lower byte
     } else {
         /**
          * @note Viewing from the top of 6623, angle use CCW as positive direction, while current use CW as positive
          *       direction. In order to unified coordinate system, minus sign is applied here.
          */
-        txmsg.data8[2] = (uint8_t) (-target_current[PITCH] >> 8); // upper byte
-        txmsg.data8[3] = (uint8_t) -target_current[PITCH];        // lower byte
+        txmsg.data8[2] = (uint8_t) (-target_current[FW_RIGHT] >> 8); // upper byte
+        txmsg.data8[3] = (uint8_t) -target_current[FW_RIGHT];        // lower byte
     }
 
     can_->send_msg(&txmsg);

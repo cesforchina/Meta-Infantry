@@ -51,6 +51,11 @@ public:
         return p;
     }
 
+    // temporal function used in debugging
+    float what_is_error() {
+        return error[0];
+    }
+
     /**
      * Perform one calculation
      * @param now

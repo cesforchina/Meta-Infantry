@@ -45,12 +45,12 @@ int ShootLG::get_bullet_count() {
 }
 
 // if using PWM, change this function back to last version
-void ShootLG::set_friction_wheels(float round_per_second) {
-    if (ShootSKD::get_fw_target_velocity() != round_per_second) ShootSKD::set_fw_target_velocity(round_per_second);
-    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (round_per_second != 0));
+void ShootLG::set_friction_wheels(float degree_per_second) {
+    if (ShootSKD::get_fw_target_velocity() != degree_per_second) ShootSKD::set_fw_target_velocity(degree_per_second);
+    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (degree_per_second != 0));
 #if defined(INFANTRY)
     // TODO: re-arrange here for common vehicle
-    Referee::set_client_number(USER_CLIENT_FW_SPEED_NUM, round_per_second);
+    Referee::set_client_number(USER_CLIENT_FW_SPEED_NUM, degree_per_second);
 #endif
      //Sending client data will be complete by higher level thread
 }

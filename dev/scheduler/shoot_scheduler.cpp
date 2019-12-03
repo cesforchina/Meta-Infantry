@@ -11,6 +11,7 @@
  */
 
 #include "shoot_scheduler.h"
+//#include "led.h"
 
 ShootSKD::install_direction_t ShootSKD::install_position[2];
 
@@ -82,9 +83,9 @@ void ShootSKD::set_plate_target_velocity(float degree_per_second) {
 //    return GimbalIF::fw_duty_cycle;
 //}
 
-void ShootSKD::set_fw_target_velocity(float round_per_second) {
-    target_velocity[2] = round_per_second;
-    target_velocity[3] = round_per_second;
+void ShootSKD::set_fw_target_velocity(float degree_per_second) {
+    target_velocity[2] = degree_per_second;
+    target_velocity[3] = degree_per_second;
     v2i_pid[2].clear_i_out();
     v2i_pid[3].clear_i_out();
 }
@@ -129,7 +130,7 @@ void ShootSKD::reset_plate_accumulated_angle() {
 void ShootSKD::SKDThread::main() {
     setName("Shoot_SKD");
     while (!shouldTerminate()) {
-
+        Shell::printf("\n\ractual: %f target: %f target_I: %d error: %f",GimbalIF::feedback[5].actual_velocity,target_velocity[3],target_current[3], v2i_pid[3].what_is_error());
         if (mode == LIMITED_SHOOTING_MODE) {
 
             // PID calculation
@@ -143,7 +144,8 @@ void ShootSKD::SKDThread::main() {
             }
             for (size_t i = 2; i < 4; i++ ) {
                 target_current[i] = (int) v2i_pid[i].calc(GimbalIF::feedback[i + 2].actual_velocity, target_velocity[i]);
-                GimbalIF::target_current[i + 2] = (target_velocity[i] == 0) ? 0 : target_current[i];
+            //    GimbalIF::target_current[i + 2] = (target_velocity[i] == 0) ? 0 : target_current[i];
+                GimbalIF::target_current[i + 2] = target_current[i];
             }
 
         } else if (mode == FORCED_RELAX_MODE) {

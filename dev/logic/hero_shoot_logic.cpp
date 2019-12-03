@@ -68,9 +68,9 @@ void HeroShootLG::shoot() {
     }
 }
 
-void HeroShootLG::set_friction_wheels(float round_per_second) {
-    if (ShootSKD::get_fw_target_velocity() != round_per_second) ShootSKD::set_fw_target_velocity(round_per_second);
-    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (round_per_second != 0));
+void HeroShootLG::set_friction_wheels(float degree_per_second) {
+    if (ShootSKD::get_fw_target_velocity() != degree_per_second) ShootSKD::set_fw_target_velocity(degree_per_second);
+    Referee::set_client_light(USER_CLIENT_FW_STATE_LIGHT, (degree_per_second != 0));
     // Sending client data will be complete by higher level thread
 }
 
