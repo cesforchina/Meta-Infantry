@@ -29,9 +29,11 @@ float UserI::shoot_launch_right_count = 999;
 
 float UserI::shoot_launch_speed = 5.0f;
 
-float UserI::shoot_common_speed = 450.0f;    // TODO: find suitable shooting speed
+float UserI::shoot_common_speed = 1080.0f;             //TODO: find suitable shooting speed
+float UserI::shoot_critical_speed = 900.0f;
 
 Remote::key_t UserI::shoot_fw_switch = Remote::KEY_Z;
+//Remote::key_t UserI::shoot_speed_switch = Remote::KEY_Q;
 
 
 /// Variables
@@ -143,6 +145,9 @@ void UserI::UserThread::main() {
                 (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_DOWN)) {
 
                 /// Remote - Shoot with Scrolling Wheel
+                if (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_UP) {
+                    ShootLG::set_friction_wheels(shoot_common_speed);
+                } else ShootLG::set_friction_wheels(shoot_critical_speed);
 
                 if (Remote::rc.wheel > 0.5) {  // down
                     if (ShootLG::get_shooter_state() == ShootLG::STOP) {
@@ -157,8 +162,6 @@ void UserI::UserThread::main() {
                         ShootLG::stop();
                     }
                 } //TODO: Else, rewrite (force_)stop() in HeroShootLG to stop the loader system here
-
-                ShootLG::set_friction_wheels(shoot_common_speed);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 

@@ -34,10 +34,11 @@ uint16_t UserH::bullet_heat = 0;
 
 //float UserH::shoot_badass_duty_cycle = 0.1f;
 //float UserH::shoot_remote_duty_cycle = 0.11;
-float UserH::shoot_common_speed = 360.0f;             //TODO: find suitable shooting speed
-//
+float UserH::shoot_common_speed = 1080.0f;             //TODO: find suitable shooting speed
+float UserH::shoot_critical_speed = 900.0f;
+
 Remote::key_t UserH::shoot_fw_switch = Remote::KEY_Z;
-Remote::key_t UserH::shoot_weapon_switch = Remote::KEY_Q;
+//Remote::key_t UserH::shoot_speed_switch = Remote::KEY_Q;
 
 
 /// Variables
@@ -154,21 +155,23 @@ void UserH::UserThread::main() {
                 (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_MIDDLE) /*||
                 (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_DOWN)*/) {
 
-                /// Remote - Shoot with Scrolling Wheel
+                if (Remote::rc.s1 == Remote::S_MIDDLE && Remote::rc.s2 == Remote::S_UP) {
+                    HeroShootLG::set_friction_wheels(shoot_common_speed);
+                } else HeroShootLG::set_friction_wheels(shoot_critical_speed);
 
+                /// Remote - Shoot with Scrolling Wheel
+                //TODO: So many set_friction_wheels here, Any problem?
                 if (Remote::rc.wheel > 0.5) {  // down
-                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
-                        HeroShootLG::set_friction_wheels(shoot_common_speed);
-                    }
+//                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+//                        HeroShootLG::set_friction_wheels(shoot_common_speed);
+//                    }
                     HeroShootLG::shoot();
                 } else if (Remote::rc.wheel < -0.5) {  // up
-                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
-                        HeroShootLG::set_friction_wheels(shoot_common_speed);
-                    }
+//                    if (HeroShootLG::get_friction_wheels_target_velocity() == 0) {  // force start friction wheels
+//                        HeroShootLG::set_friction_wheels(shoot_common_speed);
+//                    }
                     HeroShootLG::shoot();
                 }
-
-                HeroShootLG::set_friction_wheels(shoot_common_speed);
 
             } else if (Remote::rc.s1 == Remote::S_DOWN) {
 
