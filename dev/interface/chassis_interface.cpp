@@ -25,7 +25,7 @@ bool ChassisIF::send_chassis_currents() {
 
     // Fill the header
     txmsg.IDE = CAN_IDE_STD;
-    txmsg.SID = 0x200;
+    txmsg.SID = 0x1FF;
     txmsg.RTR = CAN_RTR_DATA;
     txmsg.DLC = 0x08;
 
@@ -45,9 +45,9 @@ bool ChassisIF::send_chassis_currents() {
 
 void ChassisIF::process_chassis_feedback(CANRxFrame const *rxmsg) {
 
-    if (rxmsg->SID > 0x204 || rxmsg->SID < 0x201) return;
+    if (rxmsg->SID > 0x208 || rxmsg->SID < 0x205) return;
 
-    int motor_id = (int) (rxmsg->SID - 0x201);
+    int motor_id = (int) (rxmsg->SID - 0x205);
 
     feedback[motor_id].actual_angle_raw = (uint16_t) (rxmsg->data8[0] << 8 | rxmsg->data8[1]);
     feedback[motor_id].actual_rpm_raw = (int16_t) (rxmsg->data8[2] << 8 | rxmsg->data8[3]);
@@ -64,7 +64,7 @@ void ChassisIF::process_chassis_feedback(CANRxFrame const *rxmsg) {
 
 void ChassisIF::init(CANInterface *can_interface) {
     can = can_interface;
-    can->register_callback(0x201, 0x204, process_chassis_feedback);
+    can->register_callback(0x205, 0x208, process_chassis_feedback);
     for (int i = 0; i < MOTOR_COUNT; i++) {
         feedback[i].id = (motor_id_t) i;
         feedback[i].last_update_time = 0;
