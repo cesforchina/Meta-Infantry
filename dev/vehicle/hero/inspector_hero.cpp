@@ -109,7 +109,12 @@ void InspectorH::startup_check_gimbal_feedback() {
         }
         if (not WITHIN_RECENT_TIME(GimbalIF::feedback[GimbalIF::BULLET].last_update_time, 5)) {
             // No feedback in last 5 ms (normal 1 ms)
-            LOG_ERR("Startup - Gimbal Bullet offline.");
+            LOG_ERR("Startup - Gimbal Bullet Loader offline.");
+            t = SYSTIME;  // reset the counter
+        }
+        if (not WITHIN_RECENT_TIME(GimbalIF::feedback[GimbalIF::PLATE].last_update_time, 5)) {
+            // No feedback in last 5 ms (normal 1 ms)
+            LOG_ERR("Startup - Gimbal Plate offline.");
             t = SYSTIME;  // reset the counter
         }
         if (not WITHIN_RECENT_TIME(GimbalIF::feedback[GimbalIF::FW_LEFT].last_update_time, 5)) {
@@ -140,7 +145,7 @@ bool InspectorH::remote_failure() {
 
 bool InspectorH::check_gimbal_failure() {
     bool ret = false;
-    for (unsigned i = 0 ; i < 4; i++) {
+    for (unsigned i = 0 ; i < 6; i++) {
         if (not WITHIN_RECENT_TIME(GimbalIF::feedback[i].last_update_time, 20)) {
             if (!gimbal_failure_) {  // avoid repeating printing
                 LOG_ERR("Gimbal motor %u offline", i);
@@ -201,9 +206,9 @@ void InspectorH::InspectorThread::main() {
         else LED::led_on(DEV_BOARD_LED_CHASSIS);
 
         if (remote_failure_ || gimbal_failure_ || chassis_failure_) {
-            if (!Buzzer::alerting()) Buzzer::alert_on();
+            if (!BuzzerSKD::alerting()) BuzzerSKD::alert_on();
         } else {
-            if (Buzzer::alerting()) Buzzer::alert_off();
+            if (BuzzerSKD::alerting()) BuzzerSKD::alert_off();
         }
 
         sleep(TIME_MS2I(INSPECTOR_THREAD_INTERVAL));

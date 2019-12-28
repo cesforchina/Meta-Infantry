@@ -142,8 +142,8 @@ bool InspectorI::remote_failure() {
 
 bool InspectorI::check_gimbal_failure() {
     bool ret = false;
-    for (unsigned i = 0; i < 2; i++) {
-        if (not WITHIN_RECENT_TIME(GimbalIF::feedback[i].last_update_time, 20)) {
+    for (unsigned i = 0; i < 6; i++) {
+        if (not WITHIN_RECENT_TIME(GimbalIF::feedback[i].last_update_time, 20)||i!=3) { // exclude the PLATE.
             if (!gimbal_failure_) {  // avoid repeating printing
                 LOG_ERR("Gimbal motor %u offline (at %u)", i, GimbalIF::feedback[i].last_update_time);
             }
