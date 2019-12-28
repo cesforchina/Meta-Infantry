@@ -51,7 +51,7 @@ void GimbalIF::init(CANInterface *can1_interface, CANInterface *can2_interface, 
     feedback[PITCH].id = PITCH;
     feedback[PITCH].type = pitch_type;
     feedback[PITCH].last_angle_raw = pitch_front_angle_raw;
-    feedback[YAW].set_can_channel(motor_feedback_t::can_channel_1);
+    feedback[PITCH].set_can_channel(motor_feedback_t::can_channel_1);
 
     feedback[BULLET].id = BULLET;
     feedback[BULLET].type = bullet_type;
