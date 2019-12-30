@@ -280,6 +280,12 @@ add_executable(ut_engineer
         dev/interface/referee_interface.cpp
         dev/interface/can_interface.cpp)
 
+add_executable(ut_rescue
+        dev/interface/can_interface.cpp
+        dev/module/pid_controller.hpp
+        dev/interface/gimbal_interface.cpp
+        dev/debug/Unit_Tests/ut_rescue.cpp)
+
 # Blink
 add_executable(ut_blink
         dev/module/button_monitor.cpp
