@@ -82,8 +82,8 @@ void GimbalIF::init(CANInterface *can1_interface, CANInterface *can2_interface, 
 
     // TODO: Simplify the feedback code, as now we need two function to prevent multiple process.
 
-    can1_->register_callback(0x201, 0x206, process_gimbal_can1_feedback);
-    can2_->register_callback(0x201, 0x204, process_gimbal_can2_feedback);
+    can1_->register_callback(0x201, 0x208, process_gimbal_can1_feedback);
+    can2_->register_callback(0x205, 0x208, process_gimbal_can2_feedback);
 
     // Enable PWM and perform initialization on friction wheels
 
@@ -105,7 +105,7 @@ void GimbalIF::send_gimbal_currents() {
 
     // Fill the header
     can_1_txmsg.IDE = can_2_txmsg.IDE = CAN_IDE_STD;
-    can_1_txmsg.SID = can_2_txmsg.SID = 0x200;
+    can_1_txmsg.SID = can_2_txmsg.SID = 0x1FF;
     can_1_txmsg.RTR = can_2_txmsg.RTR = CAN_RTR_DATA;
     can_1_txmsg.DLC = can_2_txmsg.DLC = 0x08;
 
@@ -247,7 +247,7 @@ void GimbalIF::send_fw_currents() {
 
     // Fill the header
     txmsg.IDE = CAN_IDE_STD;
-    txmsg.SID = 0x1FF;
+    txmsg.SID = 0x200;
     txmsg.RTR = CAN_RTR_DATA;
     txmsg.DLC = 0x08;
 
