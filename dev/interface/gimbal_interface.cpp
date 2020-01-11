@@ -22,6 +22,7 @@ float GimbalIF::fw_duty_cycle = 0.0f;
 CANInterface *GimbalIF::can1_ = nullptr;
 CANInterface *GimbalIF::can2_ = nullptr;
 
+#if !defined(INFANTRY_FOUR)
 const PWMConfig FRICTION_WHEELS_PWM_CFG = {
         50000,   // frequency
         1000,    // period
@@ -35,29 +36,34 @@ const PWMConfig FRICTION_WHEELS_PWM_CFG = {
         0,
         0
 };
+#endif
 
-void GimbalIF::init(CANInterface *can1_interface, CANInterface *can2_interface, uint16_t yaw_front_angle_raw, uint16_t pitch_front_angle_raw,
-                    motor_type_t yaw_type, motor_type_t pitch_type, motor_type_t bullet_type, motor_type_t plate_type) {
+void GimbalIF::init(CANInterface *can1_interface,           CANInterface *can2_interface,
+                    uint16_t yaw_front_angle_raw,           uint16_t pitch_front_angle_raw,
+                    motor_type_t yaw_type,                  motor_type_t pitch_type,
+                    motor_type_t bullet_type,               motor_type_t plate_type,
+                    motor_can_channel_t yaw_can_channel,    motor_can_channel_t pitch_can_channel,
+                    motor_can_channel_t bullet_can_channel, motor_can_channel_t plate_can_channel) {
 
     feedback[YAW].id = YAW;
     feedback[YAW].type = yaw_type;
     feedback[YAW].last_angle_raw = yaw_front_angle_raw;
-    feedback[YAW].can_channel = can_channel_2;
+    feedback[YAW].can_channel = yaw_can_channel;
 
     feedback[PITCH].id = PITCH;
     feedback[PITCH].type = pitch_type;
     feedback[PITCH].last_angle_raw = pitch_front_angle_raw;
-    feedback[PITCH].can_channel = can_channel_1;
+    feedback[PITCH].can_channel = pitch_can_channel;
 
     feedback[BULLET].id = BULLET;
     feedback[BULLET].type = bullet_type;
     feedback[BULLET].reset_front_angle();
-    feedback[BULLET].can_channel = can_channel_1;
+    feedback[BULLET].can_channel = bullet_can_channel;
 
     feedback[PLATE].id = PLATE;
     feedback[PLATE].type = plate_type;
     feedback[PLATE].reset_front_angle();
-    feedback[PLATE].can_channel = NONE;
+    feedback[PLATE].can_channel = plate_can_channel;
 
     can1_ = can1_interface;
     can2_ = can2_interface;
@@ -65,15 +71,15 @@ void GimbalIF::init(CANInterface *can1_interface, CANInterface *can2_interface, 
     can2_->register_callback(0x205, 0x206, process_can2_motor_feedback);
 
     // Enable PWM and perform initialization on friction wheels
-
+#if !defined(INFANTRY_FOUR)
     pwmStart(&PWMD8, &FRICTION_WHEELS_PWM_CFG);
 
-//    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
-//    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
-//    chThdSleep(TIME_MS2I(500));
+    pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
+    pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 1 * 500 + 500));
+    chThdSleep(TIME_MS2I(500));
     pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
     pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, 0 * 500 + 500));
-
+#endif
 }
 
 void GimbalIF::send_gimbal_currents() {
@@ -212,11 +218,11 @@ void GimbalIF::send_gimbal_currents() {
 
     can1_->send_msg(&can1_txmsg);
     can2_->send_msg(&can2_txmsg);
-
+#if !defined(INFANTRY_FOUR)
     // Set the PWM of friction wheels
     pwmEnableChannel(&PWMD8, FW_LEFT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
     pwmEnableChannel(&PWMD8, FW_RIGHT, PWM_PERCENTAGE_TO_WIDTH(&PWMD8, fw_duty_cycle * 500 + 500));
-
+#endif
 //    LOG("FW %f", fw_duty_cycle);
 
 }
